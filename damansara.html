@@ -1,0 +1,1223 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">Dashboard</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active">Uniqlo DAS</li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header p-0 border-bottom-0">
+            <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#weekly" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Monthly</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#daily" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Daily</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="custom-tabs-four-tabContent">
+              <div class="tab-pane fade show active" id="weekly" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                <div class="row">
+                  <div class="col-9">
+                    <div class="form-group">
+                      <label>Date range button:</label>
+    
+                      <div class="input-group">
+                        <button type="button" class="btn btn-default float-right" id="daterange-btn">
+                          <i class="far fa-calendar-alt"></i> Date range picker
+                          <i class="fas fa-caret-down"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="card">
+                      <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                          <h3 class="card-title">Total Visitors</h3>
+                          <a href="javascript:void(0);" onclick="report('dastotalvisitorsmonthly')">View Report</a>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="chart">
+                          <canvas id="totalVisitorsAllTime" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Total Zone Visitors (Male & Female)</h3>
+                      </div>
+                      <div class="card-body">
+                        <canvas id="totalVisitorsMaleFemale" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Total Zone Visitors</h3>
+                      </div>
+                      <div class="card-body">
+                        <canvas id="totalVisitors" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="card">
+                      <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                          <h3 class="card-title">Total Zone Visitors by Month</h3>
+                          <a href="javascript:void(0);" onclick="report('dastotalzonevisitorsmonthly')">View Report</a>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="chart">
+                          <canvas id="totalVisitorsMonth" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Heatmap</h3>
+                      </div>
+                      <div class="card-body">
+                        <div id="heatmapContainerWrapper" style="width:100%; height:100%;">
+                          <div id="heatmapContainer" style="width:100%; height:1300px;"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.row -->
+              </div>
+              <div class="tab-pane fade" id="daily" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                <div class="row">
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label>Date:</label>
+                      <div class="input-group">
+                        <input id="reservationdate" type="date" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label>Start Time:</label>
+                      <div class="input-group">
+                        <input id="reservationtime" type="time" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="form-group">
+                      <label>End Time:</label>
+                      <div class="input-group">
+                        <input id="endtime" type="time" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <label></label>
+                    <button type="button" class="btn btn-block bg-gradient-warning btn" id="filterSearch">
+                      <i class="fas fa-search"></i>
+                      Search
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="card">
+                      <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                          <h3 class="card-title">Total Visitors (Daily)</h3>
+                          <a href="javascript:void(0);" onclick="report('dastotalvisitorsdaily')">View Report</a>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="chart">
+                          <canvas id="totalVisitorsAllTimeDaily" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Total Daily Zone Visitors (Male & Female)</h3>
+                      </div>
+                      <div class="card-body">
+                        <canvas id="totalVisitorsMaleFemaleDaily" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Total Zone Visitors</h3>
+                      </div>
+                      <div class="card-body">
+                        <canvas id="totalZoneVisitorsDaily" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="card">
+                      <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                          <h3 class="card-title">Total Zone Visitors by Daily</h3>
+                          <a href="javascript:void(0);" onclick="report('dastotalzonevisitorsdaily')">View Report</a>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="chart">
+                          <canvas id="totalVisitorsDaily" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--div class="col-lg-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Heatmap</h3>
+                      </div>
+                      <div class="card-body">
+                        <div id="heatmapContainerWrapper2" style="width:100%; height:100%;">
+                          <div id="heatmapContainer2" style="width:100%; height:1300px;"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div-->
+                </div>
+                <!-- /.row -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+  </div>
+  <!-- /.container-fluid -->
+</div>
+<!-- /.content -->
+<div class="modal fade" id="editModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="title">-</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="card-body">
+            <!--p id="modalTotalVisitor"></p-->
+            <p id="modalTotalVisitor"></p>
+            <p id="modalTotalVisitorMorF"></p>
+            <p id="modalTotalVisitorZone"></p>
+            <p id="modalTotalVisitorZonePerc"></p>
+            <p id="modalTotalVisitorMorFZonePerc"></p>
+          </div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<script>
+$(function () {
+  /*var areaChartData2 = {
+    labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+      {
+        label               : 'In',
+        backgroundColor     : 'rgba(60,141,188,0.9)',
+        borderColor         : 'rgba(60,141,188,0.8)',
+        pointRadius          : true,
+        pointColor          : '#3b8bba',
+        pointStrokeColor    : 'rgba(60,141,188,1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(60,141,188,1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'Passing By',
+        backgroundColor     : 'rgba(210, 214, 222, 1)',
+        borderColor         : 'rgba(210, 214, 222, 1)',
+        pointRadius         : true,
+        pointColor          : 'rgba(210, 214, 222, 1)',
+        pointStrokeColor    : '#c1c7d1',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(220,220,220,1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+    ]
+  }
+
+  var areaChartOptions2 = {
+    maintainAspectRatio : false,
+    responsive : true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        gridLines : {
+          display : true,
+        }
+      }],
+      yAxes: [{
+        gridLines : {
+          display : true,
+        }
+      }]
+    }
+  }*/
+  var L1Total = 0;
+  var L2Total = 0;
+  var L3Total = 0;
+  var L4Total = 0;
+  var R1Total = 0;
+  var R2Total = 0;
+  var R3Total = 0;
+  var R4Total = 0;
+  var CTotal = 0;
+  var groundTotalCount = 0;
+  var InTotal = 0;
+
+  $('#daterange-btn').daterangepicker(
+    {
+      ranges   : {
+        'Today'       : [moment(), moment()],
+        'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+        'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      },
+      startDate: moment().subtract(29, 'days'),
+      endDate  : moment()
+    },
+    function (start, end) {
+      var startFormatted = formatDate(start) + " 00:00:00";
+      var endFormatted = formatDate(end) + " 23:59:59";
+      
+      $.post('php/getdamansara.php', {startDate: startFormatted, endDate: endFormatted}, function(data){
+        var obj = JSON.parse(data);
+
+        if(obj.status === 'success'){
+          ouStartDate = startFormatted;
+          ouEndDate = endFormatted;
+          L1Total = obj.totalL1;
+          L2Total = obj.totalL2;
+          L3Total = obj.totalL3;
+          L4Total = obj.totalL4;
+          R1Total = obj.totalR1;
+          R2Total = obj.totalR2;
+          R3Total = obj.totalR3;
+          R4Total = obj.totalR4;
+          CTotal = obj.totalC;
+          groundTotalCount = obj.groundTotalCount;
+          InTotal = obj.groundInCount;
+
+          removeData(totalVisitorsChart);
+          addData(totalVisitorsChart, 'M1', obj.totalL1);
+          addData(totalVisitorsChart, 'M2', obj.totalL2);
+          addData(totalVisitorsChart, 'M3', obj.totalL3);
+          addData(totalVisitorsChart, 'M4', obj.totalL4);
+          addData(totalVisitorsChart, 'W1', obj.totalR1);
+          addData(totalVisitorsChart, 'W2', obj.totalR2);
+          addData(totalVisitorsChart, 'W3', obj.totalR3);
+          addData(totalVisitorsChart, 'W4', obj.totalR4);
+          addData(totalVisitorsChart, 'MVP + WVP', obj.totalC);
+
+          /*removeData(passedInGroundPie);
+          addData(passedInGroundPie, 'Passing By', obj.groundPassingCount);
+          addData(passedInGroundPie, 'In', obj.groundInCount);*/
+
+          removeData(barChart);
+          removeData(stackChart);
+
+          for(var i=0; i<obj.message.length; i++){
+            addLineChartData(barChart, obj.message[i].Date, obj.message[i].LeftDoorCount, obj.message[i].RightDoorCount);
+            addStackChartData(stackChart, obj.message[i].Date, obj.message[i].TotalL1, obj.message[i].TotalL2, obj.message[i].TotalL3, obj.message[i].TotalL4, obj.message[i].TotalR1, obj.message[i].TotalR2, obj.message[i].TotalR3, obj.message[i].TotalR4, obj.message[i].TotalC);
+            //addLineChartData(lineChart, obj.message[i].Date, obj.message[i].InStoreGroundCount, obj.message[i].PassingGroundCount);
+          }
+
+          heatmap.setData({
+            max: 100,
+            min: 0,
+            data: [
+              {
+                x: 0.2 * width >> 0,
+                y: 0.2 * height >> 0, 
+                value: (obj.totalL4 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.2 * width >> 0, 
+                y: 0.45 * height >> 0,
+                value: (obj.totalL3 / obj.groundTotalCount) * 1000,
+                radius: 100
+              },
+              {
+                x: 0.2 * width >> 0,
+                y: 0.65 * height >> 0,
+                value: (obj.totalL2 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.25 * width >> 0,
+                y: 0.75 * height >> 0,
+                value: (obj.totalL1 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.9 * width >> 0,
+                y: 0.2 * height >> 0,
+                value: (obj.totalR4 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.9 * width >> 0,
+                y: 0.45 * height >> 0,
+                value: (obj.totalR3 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.9 * width >> 0,
+                y: 0.65 * height >> 0,
+                value: (obj.totalR2 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.85 * width >> 0,
+                y: 0.75 * height >> 0,
+                value: (obj.totalR1 / obj.groundTotalCount) * 1000,
+                radius: 100
+              },
+              {
+                x: 0.55 * width >> 0, 
+                y: 0.7 * height >> 0,
+                value: (obj.totalC / obj.groundTotalCount) * 1000,
+                radius: 100
+              }
+            ]
+          });
+        }
+        else if(obj.status === 'failed'){
+          toastr["error"](obj.message, "Failed:");
+        }
+        else{
+          toastr["error"]("Something wrong when geting data", "Failed:");
+        }
+      });
+    }
+  );
+
+  var heatmap = h337.create({
+    container: document.getElementById('heatmapContainer'),
+    // a waterdrop gradient ;-)
+    gradient: { 
+      0.25: "cyan", 
+      0.5: "yellow", 
+      0.75: "orange", 
+      1: 'red'},
+    maxOpacity: .6,
+    radius: 10,
+    blur: .90
+  });
+
+  /*var heatmap2 = h337.create({
+    container: document.getElementById('heatmapContainer2'),
+    // a waterdrop gradient ;-)
+    gradient: { 
+      0.25: "cyan", 
+      0.5: "yellow", 
+      0.75: "orange", 
+      1: 'red'},
+    maxOpacity: .6,
+    radius: 10,
+    blur: .90
+  });*/
+
+  // boundaries for data generation
+  var width = (+window.getComputedStyle(document.getElementsByClassName('heatmap-canvas')[0]).width.replace(/px/,''));
+  var height = (+window.getComputedStyle(document.getElementsByClassName('heatmap-canvas')[0]).height.replace(/px/,''));
+  $('#heatmapContainer').find('.heatmap-canvas').css('background-image', 'url("images/floor.png")');
+  $('#heatmapContainer').find('.heatmap-canvas').css('background-repeat', 'no-repeat');
+  $('#heatmapContainer').find('.heatmap-canvas').css('background-size', '100% auto');
+  /*$('#heatmapContainer2').find('.heatmap-canvas').css('background-image', 'url("images/floor.png")');
+  $('#heatmapContainer2').find('.heatmap-canvas').css('background-repeat', 'no-repeat');
+  $('#heatmapContainer2').find('.heatmap-canvas').css('background-size', '100% auto');*/
+
+  document.querySelector('#heatmapContainerWrapper').onclick = function(ev) {
+    if((ev.layerX <= (0.2*width + 50) && (0.2*width - 50) <= ev.layerX) && (ev.layerY <= (0.2 * height + 50) && (0.2 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("M4 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Male Zone: " + (L1Total+L2Total+L3Total+L4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To M4 Zone: " + L4Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To M4 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((L4Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To M4 Zone <br>over Total Visitor of Male Zone  (%): " + parseFloat((L4Total/(L1Total+L2Total+L3Total+L4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.2*width + 50) && (0.2*width - 50) <= ev.layerX) && (ev.layerY <= (0.45 * height + 50) && (0.45 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("M3 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Male Zone: " + (L1Total+L2Total+L3Total+L4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To M3 Zone: " + L3Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To M3 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((L3Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To M3 Zone <br>over Total Visitor of Male Zone  (%): " + parseFloat((L3Total/(L1Total+L2Total+L3Total+L4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.2*width + 50) && (0.2*width - 50) <= ev.layerX) && (ev.layerY <= (0.65 * height + 50) && (0.65 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("M2 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Male Zone: " + (L1Total+L2Total+L3Total+L4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To M2 Zone: " + L2Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To M2 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((L2Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To M2 Zone <br>over Total Visitor of Male Zone  (%): " + parseFloat((L2Total/(L1Total+L2Total+L3Total+L4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.25*width + 50) && (0.25*width - 50) <= ev.layerX) && (ev.layerY <= (0.75 * height + 50) && (0.75 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("M1 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Male Zone: " + (L1Total+L2Total+L3Total+L4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To M1 Zone: " + L1Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To M1 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((L1Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To M1 Zone <br>over Total Visitor of Male Zone  (%): " + parseFloat((L1Total/(L1Total+L2Total+L3Total+L4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.9*width + 50) && (0.9*width - 50) <= ev.layerX) && (ev.layerY <= (0.2 * height + 50) && (0.2 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("W4 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Female Zone: " + (R1Total+R2Total+R3Total+R4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To W4 Zone: " + R4Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To W4 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((R4Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To W4 Zone <br>over Total Visitor of Female Zone  (%): " + parseFloat((R4Total/(R1Total+R2Total+R3Total+R4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.9*width + 50) && (0.9*width - 50) <= ev.layerX) && (ev.layerY <= (0.45 * height + 50) && (0.45 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("W3 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Female Zone: " + (R1Total+R2Total+R3Total+R4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To W3 Zone: " + R3Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To W3 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((R3Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To W3 Zone <br>over Total Visitor of Female Zone  (%): " + parseFloat((R3Total/(R1Total+R2Total+R3Total+R4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.9*width + 50) && (0.9*width - 50) <= ev.layerX) && (ev.layerY <= (0.65 * height + 50) && (0.65 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("W2 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Female Zone: " + (R1Total+R2Total+R3Total+R4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To W2 Zone: " + R2Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To W2 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((R2Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To W2 Zone <br>over Total Visitor of Female Zone  (%): " + parseFloat((R2Total/(R1Total+R2Total+R3Total+R4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.85*width + 50) && (0.85*width - 50) <= ev.layerX) && (ev.layerY <= (0.75 * height + 50) && (0.75 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("W1 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Female Zone: " + (R1Total+R2Total+R3Total+R4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To W1 Zone: " + R1Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To W1 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((R1Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To W1 Zone <br>over Total Visitor of Female Zone  (%): " + parseFloat((R1Total/(R1Total+R2Total+R3Total+R4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.55*width + 50) && (0.55*width - 50) <= ev.layerX) && (ev.layerY <= (0.7 * height + 50) && (0.7 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("MVP + WVP Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("");
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To Middle Zone: " + CTotal);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To Middle Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((CTotal/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("");
+      $('#editModal').modal('show');
+    }
+  };
+  
+  /*document.querySelector('#heatmapContainerWrapper2').onclick = function(ev) {
+    if((ev.layerX <= (0.2*width + 50) && (0.2*width - 50) <= ev.layerX) && (ev.layerY <= (0.2 * height + 50) && (0.2 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("M4 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Male Zone: " + (L1Total+L2Total+L3Total+L4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To M4 Zone: " + L4Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To M4 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((L4Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To M4 Zone <br>over Total Visitor of Male Zone  (%): " + parseFloat((L4Total/(L1Total+L2Total+L3Total+L4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.2*width + 50) && (0.2*width - 50) <= ev.layerX) && (ev.layerY <= (0.45 * height + 50) && (0.45 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("M3 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Male Zone: " + (L1Total+L2Total+L3Total+L4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To M3 Zone: " + L3Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To M3 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((L3Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To M3 Zone <br>over Total Visitor of Male Zone  (%): " + parseFloat((L3Total/(L1Total+L2Total+L3Total+L4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.2*width + 50) && (0.2*width - 50) <= ev.layerX) && (ev.layerY <= (0.65 * height + 50) && (0.65 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("M2 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Male Zone: " + (L1Total+L2Total+L3Total+L4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To M2 Zone: " + L2Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To M2 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((L2Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To M2 Zone <br>over Total Visitor of Male Zone  (%): " + parseFloat((L2Total/(L1Total+L2Total+L3Total+L4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.25*width + 50) && (0.25*width - 50) <= ev.layerX) && (ev.layerY <= (0.75 * height + 50) && (0.75 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("M1 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Male Zone: " + (L1Total+L2Total+L3Total+L4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To M1 Zone: " + L1Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To M1 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((L1Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To M1 Zone <br>over Total Visitor of Male Zone  (%): " + parseFloat((L1Total/(L1Total+L2Total+L3Total+L4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.9*width + 50) && (0.9*width - 50) <= ev.layerX) && (ev.layerY <= (0.2 * height + 50) && (0.2 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("W4 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Female Zone: " + (R1Total+R2Total+R3Total+R4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To W4 Zone: " + R4Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To W4 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((R4Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To W4 Zone <br>over Total Visitor of Female Zone  (%): " + parseFloat((R4Total/(R1Total+R2Total+R3Total+R4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.9*width + 50) && (0.9*width - 50) <= ev.layerX) && (ev.layerY <= (0.45 * height + 50) && (0.45 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("W3 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Female Zone: " + (R1Total+R2Total+R3Total+R4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To W3 Zone: " + R3Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To W3 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((R3Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To W3 Zone <br>over Total Visitor of Female Zone  (%): " + parseFloat((R3Total/(R1Total+R2Total+R3Total+R4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.9*width + 50) && (0.9*width - 50) <= ev.layerX) && (ev.layerY <= (0.65 * height + 50) && (0.65 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("W2 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Female Zone: " + (R1Total+R2Total+R3Total+R4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To W2 Zone: " + R2Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To W2 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((R2Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To W2 Zone <br>over Total Visitor of Female Zone  (%): " + parseFloat((R2Total/(R1Total+R2Total+R3Total+R4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.85*width + 50) && (0.85*width - 50) <= ev.layerX) && (ev.layerY <= (0.75 * height + 50) && (0.75 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("W1 Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("Total Visitor of Female Zone: " + (R1Total+R2Total+R3Total+R4Total));
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To W1 Zone: " + R1Total);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To W1 Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((R1Total/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("Total Visitor To W1 Zone <br>over Total Visitor of Female Zone  (%): " + parseFloat((R1Total/(R1Total+R2Total+R3Total+R4Total))*100).toFixed(1) + " %");
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.55*width + 50) && (0.55*width - 50) <= ev.layerX) && (ev.layerY <= (0.7 * height + 50) && (0.7 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("MVP + WVP Zone");
+      $('#editModal').find('#modalTotalVisitor').html("Total Visitor of All Zone: " + groundTotalCount);
+      $('#editModal').find('#modalTotalVisitorMorF').html("");
+      $('#editModal').find('#modalTotalVisitorZone').html("Total Visitor To Middle Zone: " + CTotal);
+      $('#editModal').find('#modalTotalVisitorZonePerc').html("Total Visitor To Middle Zone <br>over Total Visitor of All Zone  (%): " + parseFloat((CTotal/groundTotalCount)*100).toFixed(1) + " %");
+      $('#editModal').find('#modalTotalVisitorMorFZonePerc').html("");
+      $('#editModal').modal('show');
+    }
+  };*/
+  // Start: DONUT CHART
+  var donutChartCanvas = $('#totalVisitors').get(0).getContext('2d');
+  var donutChartCanvas3 = $('#totalZoneVisitorsDaily').get(0).getContext('2d');
+  var donutData        = {
+    labels: ['L1', 'L2', 'L3', 'L4', 'R1', 'R2', 'R3', 'R4', 'MVP + WVP'],
+    datasets: [
+      {
+        data: [0,0,0,0,0,0,0,0,0],
+        backgroundColor : ['#f4a522', '#6092cd', '#61b546', '#aa4498', '#dccc77', '#89dcf0', '#8c564b', '#d62728', '#28383c'],
+      }
+    ]
+  }
+  var donutOptions     = {
+    maintainAspectRatio : false, 
+    responsive : true,
+    plugins: {
+      datalabels: {
+        display: true,
+        formatter: (val, ctx) => {
+          // Grab the label for this value
+          const label = ctx.chart.data.labels[ctx.dataIndex];
+
+          // Format the number with 2 decimal places
+          const formattedVal = Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+          }).format(val);
+
+          // Put them together
+          return `${label}: ${formattedVal}`;
+        },
+        color: '#fff',
+        backgroundColor: '#404040',
+      },
+    },
+  }
+  
+  var totalVisitorsChart = new Chart(donutChartCanvas, {type: 'doughnut', data: donutData, options: donutOptions});
+  var totalVisitorsChart2 = new Chart(donutChartCanvas3, {type: 'doughnut', data: donutData, options: donutOptions});
+
+  var donutChartCanvas2 = $('#totalVisitorsMaleFemale').get(0).getContext('2d');
+  var donutChartCanvas4 = $('#totalVisitorsMaleFemaleDaily').get(0).getContext('2d');
+  var donutData2        = {
+    labels: ['Male Zone', 'Female Zone', "MVP + WVP"],
+    datasets: [
+      {
+        data: [0,0,0],
+        backgroundColor : ['#f4a522', '#6092cd', '#61b546'],
+      }
+    ]
+  }
+  var donutOptions2     = {maintainAspectRatio : false, responsive : true}
+  var passedInGroundPie = new Chart(donutChartCanvas2, {type: 'doughnut', data: donutData2, options: donutOptions2});
+  var passedInGroundPie2 = new Chart(donutChartCanvas4, {type: 'doughnut', data: donutData2, options: donutOptions2});
+  // End: DONUT CHART
+
+  // Start: Bar cahrt
+  var barChartCanvas = $('#totalVisitorsAllTime').get(0).getContext('2d');
+  var barChartCanvas2 = $('#totalVisitorsAllTimeDaily').get(0).getContext('2d');
+  var barChartData = {
+    labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+      {
+        label               : 'Left Door',
+        backgroundColor     : 'rgba(244, 165, 34, 0.9)',
+        borderColor         : 'rgba(244, 165, 34, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#f4a522',
+        pointStrokeColor    : 'rgba(244, 165, 34, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(244, 165, 34, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'Right Door',
+        backgroundColor     : 'rgba(96, 146, 205, 1)',
+        borderColor         : 'rgba(96, 146, 205, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(96, 146, 205, 1)',
+        pointStrokeColor    : '#6092cd',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(96, 146, 205, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      }
+    ]
+  };
+
+  var barChartOptions = {
+    responsive              : true,
+    maintainAspectRatio     : false,
+    datasetFill             : false
+  }
+
+  var barChart = new Chart(barChartCanvas, {
+    type: 'bar',
+    data: barChartData,
+    options: barChartOptions
+  });
+
+  var barChart2 = new Chart(barChartCanvas2, {
+    type: 'bar',
+    data: barChartData,
+    options: barChartOptions
+  })
+  //End: BAR CHART
+
+  //Start: STACKED BAR CHART
+  var stackedBarChartCanvas = $('#totalVisitorsMonth').get(0).getContext('2d');
+  var stackedBarChartCanvas2 = $('#totalVisitorsDaily').get(0).getContext('2d');
+  var stackedBarChartData = {
+    labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+      {
+        label               : 'M1',
+        backgroundColor     : 'rgba(244, 165, 34, 0.9)',
+        borderColor         : 'rgba(244, 165, 34, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#f4a522',
+        pointStrokeColor    : 'rgba(244, 165, 34, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(244, 165, 34, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'M2',
+        backgroundColor     : 'rgba(96, 146, 205, 1)',
+        borderColor         : 'rgba(96, 146, 205, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(96, 146, 205, 1)',
+        pointStrokeColor    : '#6092cd',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(96, 146, 205, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'M3',
+        backgroundColor     : 'rgba(97, 181, 70, 0.9)',
+        borderColor         : 'rgba(97, 181, 70, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#61b546',
+        pointStrokeColor    : 'rgba(97, 181, 70, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(97, 181, 70, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'M4',
+        backgroundColor     : 'rgba(170, 68, 152, 1)',
+        borderColor         : 'rgba(170, 68, 152, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(170, 68, 152, 1)',
+        pointStrokeColor    : '#aa4498',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(170, 68, 152, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'W1',
+        backgroundColor     : 'rgba(220, 204, 119, 0.9)',
+        borderColor         : 'rgba(220, 204, 119, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#dccc77',
+        pointStrokeColor    : 'rgba(220, 204, 119, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(220, 204, 119, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'W2',
+        backgroundColor     : 'rgba(137, 220, 240, 1)',
+        borderColor         : 'rgba(137, 220, 240, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(137, 220, 240, 1)',
+        pointStrokeColor    : '#89dcf0',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(137, 220, 240, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'W3',
+        backgroundColor     : 'rgba(140, 86, 75, 0.9)',
+        borderColor         : 'rgba(140, 86, 75, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#8c564b',
+        pointStrokeColor    : 'rgba(140, 86, 75, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(140, 86, 75, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'W4',
+        backgroundColor     : 'rgba(214, 39, 40, 1)',
+        borderColor         : 'rgba(214, 39, 40, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(214, 39, 40, 1)',
+        pointStrokeColor    : '#d62728',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(214, 39, 40, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'MVP + WVP',
+        backgroundColor     : 'rgba(40, 56, 60, 0.9)',
+        borderColor         : 'rgba(40, 56, 60, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#28383c',
+        pointStrokeColor    : 'rgba(40, 56, 60, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(40, 56, 60, 1)',
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      }
+    ]
+  };
+
+  var stackedBarChartOptions = {
+    responsive              : true,
+    maintainAspectRatio     : false,
+    scales: {xAxes: [{stacked: true,}], yAxes: [{stacked: true}]}
+  }
+
+  var stackChart = new Chart(stackedBarChartCanvas, {
+    type: 'bar',
+    data: stackedBarChartData,
+    options: stackedBarChartOptions
+  });
+
+  var stackChart2 = new Chart(stackedBarChartCanvas2, {
+    type: 'bar',
+    data: stackedBarChartData,
+    options: stackedBarChartOptions
+  });
+  //End: STACKED BAR CHART
+
+  $('#reservationdate').val(formatDate(new Date()));
+  $('#reservationtime').val('00:00');
+  $('#endtime').val('23:59');
+
+  $('#filterSearch').on('click', function(){
+    var reservationdate = $('#reservationdate').val() ? $('#reservationdate').val() : formatDate(new Date()),
+        reservationtime = $('#reservationtime').val() ? $('#reservationtime').val() + ':00' : '00:00:00',
+        endtime = $('#endtime').val() ? $('#endtime').val() + ':59' : '23:59:59';
+
+    $.post('php/getdamansaradaily.php', {startDate: reservationdate + " " + reservationtime, endDate: reservationdate + " " + endtime}, function(data){
+      var obj = JSON.parse(data);
+      ouStartTime = reservationdate + " " + reservationtime;
+      ouEndTime = reservationdate + " " + endtime;
+
+      if(obj.status === 'success'){
+        var obj = JSON.parse(data);
+
+        if(obj.status === 'success'){
+          removeData(totalVisitorsChart2);
+          addData(totalVisitorsChart2, 'M1', obj.totalL1);
+          addData(totalVisitorsChart2, 'M2', obj.totalL2);
+          addData(totalVisitorsChart2, 'M3', obj.totalL3);
+          addData(totalVisitorsChart2, 'M4', obj.totalL4);
+          addData(totalVisitorsChart2, 'W1', obj.totalR1);
+          addData(totalVisitorsChart2, 'W2', obj.totalR2);
+          addData(totalVisitorsChart2, 'W3', obj.totalR3);
+          addData(totalVisitorsChart2, 'W4', obj.totalR4);
+          addData(totalVisitorsChart2, 'MVP + WVP', obj.totalC);
+
+          removeData(passedInGroundPie2);
+          addData(passedInGroundPie2, 'Male Zone', (obj.totalL1 + obj.totalL2 + obj.totalL3 + obj.totalL4));
+          addData(passedInGroundPie2, 'Female Zone', (obj.totalR1 + obj.totalR2 + obj.totalR3 + obj.totalR4));
+          addData(passedInGroundPie2, 'MVP + WVP', obj.totalC);
+
+          removeData(barChart2);
+          removeData(stackChart2);
+
+          for(var i=0; i<obj.message.length; i++){
+            addLineChartData(barChart2, obj.message[i].Date, obj.message[i].LeftDoorCount, obj.message[i].RightDoorCount);
+            addStackChartData(stackChart2, obj.message[i].Date, obj.message[i].TotalL1, obj.message[i].TotalL2, obj.message[i].TotalL3, obj.message[i].TotalL4, obj.message[i].TotalR1, obj.message[i].TotalR2, obj.message[i].TotalR3, obj.message[i].TotalR4, obj.message[i].TotalC);
+          }
+
+          /*heatmap2.setData({
+            max: 100,
+            min: 0,
+            data: [
+              {
+                x: 0.2 * width >> 0,
+                y: 0.2 * height >> 0, 
+                value: (obj.totalL4 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.2 * width >> 0, 
+                y: 0.45 * height >> 0,
+                value: (obj.totalL3 / obj.groundTotalCount) * 1000,
+                radius: 100
+              },
+              {
+                x: 0.2 * width >> 0,
+                y: 0.65 * height >> 0,
+                value: (obj.totalL2 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.25 * width >> 0,
+                y: 0.75 * height >> 0,
+                value: (obj.totalL1 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.9 * width >> 0,
+                y: 0.2 * height >> 0,
+                value: (obj.totalR4 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.9 * width >> 0,
+                y: 0.45 * height >> 0,
+                value: (obj.totalR3 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.9 * width >> 0,
+                y: 0.65 * height >> 0,
+                value: (obj.totalR2 / obj.groundTotalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.85 * width >> 0,
+                y: 0.75 * height >> 0,
+                value: (obj.totalR1 / obj.groundTotalCount) * 1000,
+                radius: 100
+              },
+              {
+                x: 0.55 * width >> 0, 
+                y: 0.7 * height >> 0,
+                value: (obj.totalC / obj.groundTotalCount) * 1000,
+                radius: 100
+              }
+            ]
+          });*/
+        }
+        else if(obj.status === 'failed'){
+          toastr["error"](obj.message, "Failed:");
+        }
+        else{
+          toastr["error"]("Something wrong when geting data", "Failed:");
+        }
+      }
+      else if(obj.status === 'failed'){
+        toastr["error"](obj.message, "Failed:");
+      }
+      else{
+        toastr["error"]("Something wrong when geting data", "Failed:");
+      }
+    });
+  });
+
+  $.post('php/getdamansara.php', {startDate: formatDate(moment().subtract(29, 'days')) + " 00:00:00", endDate: formatDate(formatDate(moment()) + " 00:00:00") + " 23:59:59"}, function(data){
+    var obj = JSON.parse(data);
+    ouStartDate = formatDate(moment().subtract(29, 'days')) + " 00:00:00";
+    ouEndDate = formatDate(formatDate(moment()) + " 00:00:00") + " 23:59:59";
+
+    if(obj.status === 'success'){
+      L1Total = obj.totalL1;
+      L2Total = obj.totalL2;
+      L3Total = obj.totalL3;
+      L4Total = obj.totalL4;
+      R1Total = obj.totalR1;
+      R2Total = obj.totalR2;
+      R3Total = obj.totalR3;
+      R4Total = obj.totalR4;
+      CTotal = obj.totalC;
+      groundTotalCount = obj.groundTotalCount;
+      InTotal = obj.groundInCount;
+
+      removeData(totalVisitorsChart);
+      addData(totalVisitorsChart, 'M1', obj.totalL1);
+      addData(totalVisitorsChart, 'M2', obj.totalL2);
+      addData(totalVisitorsChart, 'M3', obj.totalL3);
+      addData(totalVisitorsChart, 'M4', obj.totalL4);
+      addData(totalVisitorsChart, 'W1', obj.totalR1);
+      addData(totalVisitorsChart, 'W2', obj.totalR2);
+      addData(totalVisitorsChart, 'W3', obj.totalR3);
+      addData(totalVisitorsChart, 'W4', obj.totalR4);
+      addData(totalVisitorsChart, 'MVP + WVP', obj.totalC);
+
+      removeData(passedInGroundPie);
+      addData(passedInGroundPie, 'Male Zone', (obj.totalL1 + obj.totalL2 + obj.totalL3 + obj.totalL4));
+      addData(passedInGroundPie, 'Female Zone', (obj.totalR1 + obj.totalR2 + obj.totalR3 + obj.totalR4));
+      addData(passedInGroundPie, 'MVP + WVP', obj.totalC);
+
+      removeData(barChart);
+      removeData(stackChart);
+
+      for(var i=0; i<obj.message.length; i++){
+        addLineChartData(barChart, obj.message[i].Date, obj.message[i].LeftDoorCount, obj.message[i].RightDoorCount);
+        addStackChartData(stackChart, obj.message[i].Date, obj.message[i].TotalL1, obj.message[i].TotalL2, obj.message[i].TotalL3, obj.message[i].TotalL4, obj.message[i].TotalR1, obj.message[i].TotalR2, obj.message[i].TotalR3, obj.message[i].TotalR4, obj.message[i].TotalC);
+      }
+
+      heatmap.setData({
+        max: 100,
+        min: 0,
+        data: [
+          {
+            x: 0.2 * width >> 0,
+            y: 0.2 * height >> 0, 
+            value: (obj.totalL4 / obj.groundTotalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.2 * width >> 0, 
+            y: 0.45 * height >> 0,
+            value: (obj.totalL3 / obj.groundTotalCount) * 1000,
+            radius: 100
+          },
+          {
+            x: 0.2 * width >> 0,
+            y: 0.65 * height >> 0,
+            value: (obj.totalL2 / obj.groundTotalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.25 * width >> 0,
+            y: 0.75 * height >> 0,
+            value: (obj.totalL1 / obj.groundTotalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.9 * width >> 0,
+            y: 0.2 * height >> 0,
+            value: (obj.totalR4 / obj.groundTotalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.9 * width >> 0,
+            y: 0.45 * height >> 0,
+            value: (obj.totalR3 / obj.groundTotalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.9 * width >> 0,
+            y: 0.65 * height >> 0,
+            value: (obj.totalR2 / obj.groundTotalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.85 * width >> 0,
+            y: 0.75 * height >> 0,
+            value: (obj.totalR1 / obj.groundTotalCount) * 1000,
+            radius: 100
+          },
+          {
+            x: 0.55 * width >> 0, 
+            y: 0.7 * height >> 0,
+            value: (obj.totalC / obj.groundTotalCount) * 1000,
+            radius: 100
+          }
+        ]
+      });
+    }
+    else if(obj.status === 'failed'){
+      toastr["error"](obj.message, "Failed:");
+    }
+    else{
+      toastr["error"]("Something wrong when geting data", "Failed:");
+    }
+  });
+
+  $.post('php/getdamansaradaily.php', {startDate: $('#reservationdate').val() + " " + $('#reservationtime').val() + ':00', endDate: $('#reservationdate').val() + " " + $('#endtime').val() + ':59'}, function(data){
+    var obj = JSON.parse(data);
+    ouStartTime = $('#reservationdate').val() + " " + $('#reservationtime').val() + ':00';
+    ouEndTime = $('#reservationdate').val() + " " + $('#endtime').val() + ':59';
+
+    if(obj.status === 'success'){
+      var obj = JSON.parse(data);
+
+      if(obj.status === 'success'){
+        removeData(totalVisitorsChart2);
+        addData(totalVisitorsChart2, 'M1', obj.totalL1);
+        addData(totalVisitorsChart2, 'M2', obj.totalL2);
+        addData(totalVisitorsChart2, 'M3', obj.totalL3);
+        addData(totalVisitorsChart2, 'M4', obj.totalL4);
+        addData(totalVisitorsChart2, 'W1', obj.totalR1);
+        addData(totalVisitorsChart2, 'W2', obj.totalR2);
+        addData(totalVisitorsChart2, 'W3', obj.totalR3);
+        addData(totalVisitorsChart2, 'W4', obj.totalR4);
+        addData(totalVisitorsChart2, 'MVP + WVP', obj.totalC);
+
+        removeData(passedInGroundPie2);
+        addData(passedInGroundPie2, 'Male Zone', (obj.totalL1 + obj.totalL2 + obj.totalL3 + obj.totalL4));
+        addData(passedInGroundPie2, 'Female Zone', (obj.totalR1 + obj.totalR2 + obj.totalR3 + obj.totalR4));
+        addData(passedInGroundPie2, 'MVP + WVP', obj.totalC);
+
+        removeData(barChart2);
+        removeData(stackChart2);
+
+        for(var i=0; i<obj.message.length; i++){
+          addLineChartData(barChart2, obj.message[i].Date, obj.message[i].LeftDoorCount, obj.message[i].RightDoorCount);
+          addStackChartData(stackChart2, obj.message[i].Date, obj.message[i].TotalL1, obj.message[i].TotalL2, obj.message[i].TotalL3, obj.message[i].TotalL4, obj.message[i].TotalR1, obj.message[i].TotalR2, obj.message[i].TotalR3, obj.message[i].TotalR4, obj.message[i].TotalC);
+        }
+
+        /*heatmap2.setData({
+          max: 100,
+          min: 0,
+          data: [
+            {
+              x: 0.2 * width >> 0,
+              y: 0.2 * height >> 0, 
+              value: (obj.totalL4 / obj.groundTotalCount) * 1000,
+              radius: 100
+            }, 
+            {
+              x: 0.2 * width >> 0, 
+              y: 0.45 * height >> 0,
+              value: (obj.totalL3 / obj.groundTotalCount) * 1000,
+              radius: 100
+            },
+            {
+              x: 0.2 * width >> 0,
+              y: 0.65 * height >> 0,
+              value: (obj.totalL2 / obj.groundTotalCount) * 1000,
+              radius: 100
+            }, 
+            {
+              x: 0.25 * width >> 0,
+              y: 0.75 * height >> 0,
+              value: (obj.totalL1 / obj.groundTotalCount) * 1000,
+              radius: 100
+            }, 
+            {
+              x: 0.9 * width >> 0,
+              y: 0.2 * height >> 0,
+              value: (obj.totalR4 / obj.groundTotalCount) * 1000,
+              radius: 100
+            }, 
+            {
+              x: 0.9 * width >> 0,
+              y: 0.45 * height >> 0,
+              value: (obj.totalR3 / obj.groundTotalCount) * 1000,
+              radius: 100
+            }, 
+            {
+              x: 0.9 * width >> 0,
+              y: 0.65 * height >> 0,
+              value: (obj.totalR2 / obj.groundTotalCount) * 1000,
+              radius: 100
+            }, 
+            {
+              x: 0.85 * width >> 0,
+              y: 0.75 * height >> 0,
+              value: (obj.totalR1 / obj.groundTotalCount) * 1000,
+              radius: 100
+            },
+            {
+              x: 0.55 * width >> 0, 
+              y: 0.7 * height >> 0,
+              value: (obj.totalC / obj.groundTotalCount) * 1000,
+              radius: 100
+            }
+          ]
+        });*/
+      }
+      else if(obj.status === 'failed'){
+        toastr["error"](obj.message, "Failed:");
+      }
+      else{
+        toastr["error"]("Something wrong when geting data", "Failed:");
+      }
+    }
+    else if(obj.status === 'failed'){
+      toastr["error"](obj.message, "Failed:");
+    }
+    else{
+      toastr["error"]("Something wrong when geting data", "Failed:");
+    }
+  });
+});
+</script>

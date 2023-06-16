@@ -1,0 +1,623 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0">Felda</h1>
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item">Felda</li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </div><!-- /.col -->
+    </div><!-- /.row -->
+  </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+
+<!-- Main content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-9">
+                <div class="form-group">
+                  <label>Date range button:</label>
+
+                  <div class="input-group">
+                    <button type="button" class="btn btn-default float-right" id="daterange-btn">
+                      <i class="far fa-calendar-alt"></i> Date range picker
+                      <i class="fas fa-caret-down"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="d-flex justify-content-between">
+            <h3 class="card-title">Total Vehicle Into E5 (Big Car vs Small Car)</h3>
+            <!--a href="javascript:void(0);" onclick="report('dastotalvisitorsdaily')">View Report</a-->
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart">
+            <canvas id="totalVehicleIntoE5" style="min-height: 250px; height: 200px; max-height: 300px; max-width: 100%;"></canvas>
+          </div>
+        </div>
+        <!-- /.card-body -->
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Heatmap</h3>
+        </div>
+        <div class="card-body">
+          <div id="heatmapContainerWrapper" style="width:100%; height:100%;">
+            <div id="heatmapContainer" style="width:100%; height:800px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+</div>
+<!-- /.content -->
+<div class="modal fade" id="editModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="title">-</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Total Vehicle</h3>
+              </div>
+              <div class="card-body">
+                <canvas id="totalVehicle" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Total Vehicle Daily Chart</h3>
+              </div>
+              <div class="card-body">
+                <div class="chart">
+                  <canvas id="totalVehicleDaily" style="min-height: 250px; height: 200px; max-height: 300px; max-width: 100%;"></canvas>
+                </div>              
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<script>
+$(function () {
+  //Date range as a button
+  $('#daterange-btn').daterangepicker(
+    {
+      ranges   : {
+        'Today'       : [moment(), moment()],
+        'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+        'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      },
+      startDate: moment().subtract(29, 'days'),
+      endDate  : moment()
+    },
+    function (start, end) {
+      var startFormatted = formatDate(start) + " 00:00:00";
+      var endFormatted = formatDate(end) + " 23:59:59";
+      
+      $.post('php/getmonthly.php', {startDate: startFormatted, endDate: endFormatted}, function(data){
+        var obj = JSON.parse(data);
+
+        if(obj.status === 'success'){
+          E1Big = obj.E1Big;
+          E1Small = obj.E1Small;
+          E2Big = obj.E2Big;
+          E2Small = obj.E2Small;
+          E3Big = obj.E3Big;
+          E3Small = obj.E3Small;
+          E5Big = obj.E5Big;
+          E5Small = obj.E5Small;
+          C1Big = obj.C1Big;
+          C1Small = obj.C1Small;
+          C2Big = obj.C2Big;
+          C2Small = obj.C2Small;
+          C3Big = obj.C3Big;
+          C3Small = obj.C3Small;
+
+          heatmap.setData({
+            max: 100,
+            min: 0,
+            data: [
+              {
+                x: 0.53 * width >> 0,
+                y: 0.75 * height >> 0,
+                value: (obj.totalE5 / obj.totalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.4 * width >> 0,
+                y: 0.70 * height >> 0,
+                value: (obj.totalC1 / obj.totalCount) * 1000,
+                radius: 100
+              },
+              {
+                x: 0.35 * width >> 0,
+                y: 0.28 * height >> 0,
+                value: (obj.totalE2 / obj.totalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.10 * width >> 0,
+                y: 0.05 * height >> 0,
+                value: (obj.totalE3 / obj.totalCount) * 1000,
+                radius: 100
+              },
+              {
+                x: 0.38 * width >> 0,
+                y: 0.50 * height >> 0,
+                value: (obj.totalC3 / obj.totalCount) * 1000,
+                radius: 100
+              },
+              {
+                x: 0.63 * width >> 0,
+                y: 0.8 * height >> 0,
+                value: (obj.totalE1 / obj.totalCount) * 1000,
+                radius: 100
+              }, 
+              {
+                x: 0.33 * width >> 0,
+                y: 0.65 * height >> 0,
+                value: (obj.totalC2 / obj.totalCount) * 1000,
+                radius: 100
+              }
+            ]
+          });
+        
+          //removeData(lineChart);
+          //removeData(lineChart2);
+          removeData(barChart2);
+          removeData(barChart3);
+          removeData(barChart);
+
+          for(var i=0; i<obj.message.length; i++){
+            //addLineChartData(lineChart, obj.message[i].Date, obj.message[i].C1Ph, obj.message[i].C2Ph, obj.message[i].C3Ph);
+            //addLineChartData(lineChart2, obj.message[i].Date, obj.message[i].C1Humidity, obj.message[i].C2Humidity, obj.message[i].C3Humidity);
+            addBarChartData(barChart2, obj.message[i].Date, obj.message[i].E5Big, obj.message[i].E5Small);
+            addBarChartData(barChart3, obj.message[i].Date, obj.message[i].E2Count, obj.message[i].E3Count);
+          }
+
+          for(var j=0; j<obj.harvester.length; j++){
+            addBarChartData(barChart, obj.harvester[j].zone, obj.harvester[j].Har1, obj.harvester[j].Har2);
+          }
+        }
+        else if(obj.status === 'failed'){
+          toastr["error"](obj.message, "Failed:");
+        }
+        else{
+          toastr["error"]("Something wrong when geting data", "Failed:");
+        }
+      });
+    }
+  );
+
+  var heatmap = h337.create({
+    container: document.getElementById('heatmapContainer'),
+    // a waterdrop gradient ;-)
+    gradient: { 
+      0.25: "cyan", 
+      0.5: "yellow", 
+      0.75: "orange", 
+      1: 'red'},
+    maxOpacity: .6,
+    radius: 10,
+    blur: .90
+  });
+
+  document.querySelector('#heatmapContainerWrapper').onclick = function(ev) {
+    if((ev.layerX <= (0.53*width + 50) && (0.53*width - 50) <= ev.layerX) && (ev.layerY <= (0.75 * height + 50) && (0.75 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("E5");
+      $('#editModal').find('#bigVehicle').html(E5Big);
+      $('#editModal').find('#smallVehicle').html(E5Small);
+      removeData(passedInGroundPie);
+      addData(passedInGroundPie, 'Small Vehicle', E5Small);
+      addData(passedInGroundPie, 'Big Vehicle', E5Big);
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.4*width + 50) && (0.4*width - 50) <= ev.layerX) && (ev.layerY <= (0.7 * height + 50) && (0.7 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("C1");
+      $('#editModal').find('#bigVehicle').html(C1Big);
+      $('#editModal').find('#smallVehicle').html(C1Small);
+      removeData(passedInGroundPie);
+      addData(passedInGroundPie, 'Small Vehicle', C1Small);
+      addData(passedInGroundPie, 'Big Vehicle', C1Big);
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.35*width + 50) && (0.35*width - 50) <= ev.layerX) && (ev.layerY <= (0.28 * height + 50) && (0.28 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("E2");
+      $('#editModal').find('#bigVehicle').html(E2Big);
+      $('#editModal').find('#smallVehicle').html(E2Small);
+      removeData(passedInGroundPie);
+      addData(passedInGroundPie, 'Small Vehicle', E2Small);
+      addData(passedInGroundPie, 'Big Vehicle', E2Big);
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.10*width + 50) && (0.10*width - 50) <= ev.layerX) && (ev.layerY <= (0.05 * height + 50) && (0.05 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("E3");
+      $('#editModal').find('#bigVehicle').html(E3Big);
+      $('#editModal').find('#smallVehicle').html(E3Small);
+      removeData(passedInGroundPie);
+      addData(passedInGroundPie, 'Small Vehicle', E3Small);
+      addData(passedInGroundPie, 'Big Vehicle', E3Big);
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.38*width + 50) && (0.38*width - 50) <= ev.layerX) && (ev.layerY <= (0.5 * height + 50) && (0.5 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("C3");
+      $('#editModal').find('#bigVehicle').html(C3Big);
+      $('#editModal').find('#smallVehicle').html(C3Small);
+      removeData(passedInGroundPie);
+      addData(passedInGroundPie, 'Small Vehicle', C3Small);
+      addData(passedInGroundPie, 'Big Vehicle', C3Big);
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.63*width + 50) && (0.63*width - 50) <= ev.layerX) && (ev.layerY <= (0.8 * height + 50) && (0.8 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("E1");
+      $('#editModal').find('#bigVehicle').html(E1Big);
+      $('#editModal').find('#smallVehicle').html(E1Small);
+      removeData(passedInGroundPie);
+      addData(passedInGroundPie, 'Small Vehicle', E1Small);
+      addData(passedInGroundPie, 'Big Vehicle', E1Big);
+      $('#editModal').modal('show');
+    }
+    else if((ev.layerX <= (0.33*width + 50) && (0.33*width - 50) <= ev.layerX) && (ev.layerY <= (0.65 * height + 50) && (0.65 * height - 50) <= ev.layerY)){
+      $('#editModal').find('#title').html("C2");
+      $('#editModal').find('#bigVehicle').html(C2Big);
+      $('#editModal').find('#smallVehicle').html(C2Small);
+      removeData(passedInGroundPie);
+      addData(passedInGroundPie, 'Small Vehicle', C2Small);
+      addData(passedInGroundPie, 'Big Vehicle', C2Big);
+      $('#editModal').modal('show');
+    }
+  };
+
+  // boundaries for data generation
+  var width = (+window.getComputedStyle(document.getElementsByClassName('heatmap-canvas')[0]).width.replace(/px/,''));
+  var height = (+window.getComputedStyle(document.getElementsByClassName('heatmap-canvas')[0]).height.replace(/px/,''));
+  $('#heatmapContainer').find('.heatmap-canvas').css('background-image', 'url("images/floor.png")');
+  $('#heatmapContainer').find('.heatmap-canvas').css('background-repeat', 'no-repeat');
+  $('#heatmapContainer').find('.heatmap-canvas').css('background-size', '100% auto');
+
+  var donutChartCanvas2 = $('#bigSmallVehicle').get(0).getContext('2d');
+  var donutData2        = {
+    labels: ['Small Vehicle', 'Big Vehicle'],
+    datasets: [
+      {
+        data: [0,0],
+        backgroundColor : ['#28a745', '#ffc107'],
+      }
+    ]
+  }
+  var donutOptions2     = {maintainAspectRatio : false, responsive : true}
+  var passedInGroundPie = new Chart(donutChartCanvas2, {type: 'doughnut', data: donutData2, options: donutOptions2});
+
+
+  // Start: Bar cahrt
+  var barChartCanvas3 = $('#totalVehicleIntoE2AndE3').get(0).getContext('2d');
+  var barChartData3 = {
+    labels  : ['15/01', '16/01'],
+    datasets: [
+      {
+        label               : 'E2',
+        backgroundColor     : 'rgba(244, 165, 34, 0.9)',
+        borderColor         : 'rgba(244, 165, 34, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#f4a522',
+        pointStrokeColor    : 'rgba(244, 165, 34, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(244, 165, 34, 1)',
+        data                : [0, 0]
+      },
+      {
+        label               : 'E3',
+        backgroundColor     : 'rgba(96, 146, 205, 1)',
+        borderColor         : 'rgba(96, 146, 205, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(96, 146, 205, 1)',
+        pointStrokeColor    : '#6092cd',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(96, 146, 205, 1)',
+        data                : [0, 0]
+      }
+    ]
+  };
+
+  var barChartOptions3 = {responsive: true, maintainAspectRatio: false, datasetFill: false};
+  var barChart3 = new Chart(barChartCanvas3, {type: 'bar', data: barChartData3, options: barChartOptions3});
+
+  var barChartCanvas2 = $('#totalVehicleIntoE5').get(0).getContext('2d');
+  var barChartData2 = {
+    labels  : ['15/01', '16/01'],
+    datasets: [
+      {
+        label               : 'Big Vehicle',
+        backgroundColor     : 'rgba(244, 165, 34, 0.9)',
+        borderColor         : 'rgba(244, 165, 34, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#f4a522',
+        pointStrokeColor    : 'rgba(244, 165, 34, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(244, 165, 34, 1)',
+        data                : [0, 0]
+      },
+      {
+        label               : 'Small Vehicle',
+        backgroundColor     : 'rgba(96, 146, 205, 1)',
+        borderColor         : 'rgba(96, 146, 205, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(96, 146, 205, 1)',
+        pointStrokeColor    : '#6092cd',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(96, 146, 205, 1)',
+        data                : [0, 0]
+      }
+    ]
+  };
+
+  var barChartOptions2 = {responsive: true, maintainAspectRatio: false, datasetFill: false};
+  var barChart2 = new Chart(barChartCanvas2, {type: 'bar', data: barChartData2, options: barChartOptions2});
+
+  var barChartCanvas = $('#totalTimeSpentByZone').get(0).getContext('2d');
+  var barChartData = {
+    labels  : ['C1', 'C2', 'C3', 'E2', 'E3', 'E5'],
+    datasets: [
+      {
+        label               : 'Harvester 1 (212248)',
+        backgroundColor     : 'rgba(244, 165, 34, 0.9)',
+        borderColor         : 'rgba(244, 165, 34, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#f4a522',
+        pointStrokeColor    : 'rgba(244, 165, 34, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(244, 165, 34, 1)',
+        data                : [0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'Harvester 2 (561973)',
+        backgroundColor     : 'rgba(96, 146, 205, 1)',
+        borderColor         : 'rgba(96, 146, 205, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(96, 146, 205, 1)',
+        pointStrokeColor    : '#6092cd',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(96, 146, 205, 1)',
+        data                : [0, 0, 0, 0, 0, 0]
+      }
+    ]
+  };
+
+  var barChartOptions = {responsive: true, maintainAspectRatio: false, datasetFill: false};
+  var barChart = new Chart(barChartCanvas, {type: 'bar', data: barChartData, options: barChartOptions});
+  //End: BAR CHART
+
+  // Start: LINE CHART 
+  /*var lineChartCanvas = $('#phValueByZone').get(0).getContext('2d');
+  var lineChartCanvas2 = $('#humidityValueByZone').get(0).getContext('2d');
+  var lineChartOptions = {maintainAspectRatio : false, responsive : true, datasetFill: false};
+  var lineChartOptions2 = {maintainAspectRatio : false, responsive : true, datasetFill: false};
+  var lineChartData = {
+    labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+    {
+        label               : 'C1',
+        backgroundColor     : 'rgba(244, 165, 34, 0.9)',
+        borderColor         : 'rgba(244, 165, 34, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#f4a522',
+        pointStrokeColor    : 'rgba(244, 165, 34, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(244, 165, 34, 1)',
+        fill                : false,
+        data                : [1, 1, 2, 0, 0, 0, 0]
+      },
+      {
+        label               : 'C2',
+        backgroundColor     : 'rgba(96, 146, 205, 1)',
+        borderColor         : 'rgba(96, 146, 205, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(96, 146, 205, 1)',
+        pointStrokeColor    : '#6092cd',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(96, 146, 205, 1)',
+        fill                : false,
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'C3',
+        backgroundColor     : 'rgba(97, 181, 70, 0.9)',
+        borderColor         : 'rgba(97, 181, 70, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#61b546',
+        pointStrokeColor    : 'rgba(97, 181, 70, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(97, 181, 70, 1)',
+        fill                : false,
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      }
+    ]
+  };
+  var lineChartData2 = {
+    labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+    {
+        label               : 'C1',
+        backgroundColor     : 'rgba(244, 165, 34, 0.9)',
+        borderColor         : 'rgba(244, 165, 34, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#f4a522',
+        pointStrokeColor    : 'rgba(244, 165, 34, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(244, 165, 34, 1)',
+        fill                : false,
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'C2',
+        backgroundColor     : 'rgba(96, 146, 205, 1)',
+        borderColor         : 'rgba(96, 146, 205, 1)',
+        pointRadius         : false,
+        pointColor          : 'rgba(96, 146, 205, 1)',
+        pointStrokeColor    : '#6092cd',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(96, 146, 205, 1)',
+        fill                : false,
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      },
+      {
+        label               : 'C3',
+        backgroundColor     : 'rgba(97, 181, 70, 0.9)',
+        borderColor         : 'rgba(97, 181, 70, 0.8)',
+        pointRadius          : false,
+        pointColor          : '#61b546',
+        pointStrokeColor    : 'rgba(97, 181, 70, 1)',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(97, 181, 70, 1)',
+        fill                : false,
+        data                : [0, 0, 0, 0, 0, 0, 0]
+      }
+    ]
+  };
+
+  var lineChart = new Chart(lineChartCanvas, {type: 'line', data: lineChartData, options: lineChartOptions});
+  var lineChart2 = new Chart(lineChartCanvas2, {type: 'line', data: lineChartData2, options: lineChartOptions2});
+  
+  /*var passedInLvl1Daily = new Chart(lineChartCanvas4, {
+    type: 'line',
+    data: lineChartData2,
+    options: lineChartOptions2
+  });*/
+  //End: LINE CHART
+
+  $.post('php/getmonthly.php', {startDate: formatDate(moment().subtract(29, 'days')) + " 00:00:00", endDate: formatDate(moment()) + " 23:59:59"}, function(data){
+    var obj = JSON.parse(data);
+
+    if(obj.status === 'success'){
+      E1Big = obj.E1Big;
+      E1Small = obj.E1Small;
+      E2Big = obj.E2Big;
+      E2Small = obj.E2Small;
+      E3Big = obj.E3Big;
+      E3Small = obj.E3Small;
+      E5Big = obj.E5Big;
+      E5Small = obj.E5Small;
+      C1Big = obj.C1Big;
+      C1Small = obj.C1Small;
+      C2Big = obj.C2Big;
+      C2Small = obj.C2Small;
+      C3Big = obj.C3Big;
+      C3Small = obj.C3Small;
+
+      heatmap.setData({
+        max: 100,
+        min: 0,
+        data: [
+          {
+            x: 0.53 * width >> 0,
+            y: 0.75 * height >> 0,
+            value: (obj.totalE5 / obj.totalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.4 * width >> 0,
+            y: 0.70 * height >> 0,
+            value: (obj.totalC1 / obj.totalCount) * 1000,
+            radius: 100
+          },
+          {
+            x: 0.35 * width >> 0,
+            y: 0.28 * height >> 0,
+            value: (obj.totalE2 / obj.totalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.10 * width >> 0,
+            y: 0.05 * height >> 0,
+            value: (obj.totalE3 / obj.totalCount) * 1000,
+            radius: 100
+          },
+          {
+            x: 0.38 * width >> 0,
+            y: 0.50 * height >> 0,
+            value: (obj.totalC3 / obj.totalCount) * 1000,
+            radius: 100
+          },
+          {
+            x: 0.63 * width >> 0,
+            y: 0.8 * height >> 0,
+            value: (obj.totalE1 / obj.totalCount) * 1000,
+            radius: 100
+          }, 
+          {
+            x: 0.33 * width >> 0,
+            y: 0.65 * height >> 0,
+            value: (obj.totalC2 / obj.totalCount) * 1000,
+            radius: 100
+          }
+        ]
+      });
+    
+      //removeData(lineChart);
+      //removeData(lineChart2);
+      removeData(barChart2);
+      removeData(barChart3);
+      removeData(barChart);
+
+      for(var i=0; i<obj.message.length; i++){
+        //addLineChartData(lineChart, obj.message[i].Date, obj.message[i].C1Ph, obj.message[i].C2Ph, obj.message[i].C3Ph);
+        //addLineChartData(lineChart2, obj.message[i].Date, obj.message[i].C1Humidity, obj.message[i].C2Humidity, obj.message[i].C3Humidity);
+        addBarChartData(barChart2, obj.message[i].Date, obj.message[i].E5Big, obj.message[i].E5Small);
+        addBarChartData(barChart3, obj.message[i].Date, obj.message[i].E2Count, obj.message[i].E3Count);
+      }
+
+      for(var j=0; j<obj.harvester.length; j++){
+        addBarChartData(barChart, obj.harvester[j].zone, obj.harvester[j].Har1, obj.harvester[j].Har2);
+      }
+    }
+    else if(obj.status === 'failed'){
+      toastr["error"](obj.message, "Failed:");
+    }
+    else{
+      toastr["error"]("Something wrong when geting data", "Failed:");
+    }
+  });
+});
+</script>
