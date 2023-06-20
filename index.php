@@ -72,7 +72,7 @@ else{
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
       <!--img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"-->
-      <span class="brand-text font-weight-light">Felda</span>
+      <span class="brand-text font-weight-light">IJM</span>
     </a>
 
     <!-- Sidebar -->
@@ -227,17 +227,12 @@ function addData(chart, label, data) {
   chart.update();
 }
 
-function addStackChartData(chart, label, data, data2, data3, data4, data5, data6, data7, data8, data9) {
+function addStackChartData(chart, label, data, data2, data3, data4) {
   chart.data.labels.push(label);
   chart.data.datasets[0].data.push(data);
   chart.data.datasets[1].data.push(data2);
   chart.data.datasets[2].data.push(data3);
   chart.data.datasets[3].data.push(data4);
-  chart.data.datasets[4].data.push(data5);
-  chart.data.datasets[5].data.push(data6);
-  chart.data.datasets[6].data.push(data7);
-  chart.data.datasets[7].data.push(data8);
-  chart.data.datasets[8].data.push(data9);
   chart.update();
 }
 
@@ -248,11 +243,12 @@ function addBarChartData(chart, label, data, data2) {
   chart.update();
 }
 
-function addLineChartData(chart, label, data, data2, data3) {
+function addLineChartData(chart, label, data, data2, data3, data4) {
   chart.data.labels.push(label);
   chart.data.datasets[0].data.push(data);
   chart.data.datasets[1].data.push(data2);
   chart.data.datasets[2].data.push(data3);
+  chart.data.datasets[3].data.push(data4);
   chart.update();
 }
 
