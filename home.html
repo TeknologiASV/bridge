@@ -2,11 +2,11 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">Felda</h1>
+        <h1 class="m-0">IJM</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item">Felda</li>
+          <li class="breadcrumb-item">IJM</li>
           <li class="breadcrumb-item active">Dashboard</li>
         </ol>
       </div><!-- /.col -->
@@ -24,7 +24,7 @@
           <div class="card-header p-0 border-bottom-0">
             <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#weekly" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Weekly</a>
+                <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#weekly" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Monthly</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#daily" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Daily</a>
@@ -228,10 +228,10 @@ $(function () {
         if(obj.status === 'success'){
           removeData(passedInGroundPie);
           removeData(stackChart3);
-          addData(passedInGroundPie, 'Car & Van', obj.message.type1);
-          addData(passedInGroundPie, 'Small Lorry, 2 Axles', obj.message.type2);
-          addData(passedInGroundPie, 'Big Lorry, 3 Axles and Above', obj.message.type3);
-          addData(passedInGroundPie, 'Bus', obj.message.type4);
+          addData(passedInGroundPie, 'Car & Van', obj.type1);
+          addData(passedInGroundPie, 'Small Lorry, 2 Axles', obj.type2);
+          addData(passedInGroundPie, 'Big Lorry, 3 Axles and Above', obj.type3);
+          addData(passedInGroundPie, 'Bus', obj.type4);
 
           for(var i=0; i<obj.message.length; i++){
             addStackChartData(stackChart3, obj.message[i].Date, obj.message[i].type1, obj.message[i].type2, obj.message[i].type3, obj.message[i].type4);
@@ -419,10 +419,10 @@ $(function () {
     if(obj.status === 'success'){
       removeData(passedInGroundPie);
       removeData(stackChart3);
-      addData(passedInGroundPie, 'Car & Van', obj.message.type1);
-      addData(passedInGroundPie, 'Small Lorry, 2 Axles', obj.message.type2);
-      addData(passedInGroundPie, 'Big Lorry, 3 Axles and Above', obj.message.type3);
-      addData(passedInGroundPie, 'Bus', obj.message.type4);
+      addData(passedInGroundPie, 'Car & Van', obj.type1);
+      addData(passedInGroundPie, 'Small Lorry, 2 Axles', obj.type2);
+      addData(passedInGroundPie, 'Big Lorry, 3 Axles and Above', obj.type3);
+      addData(passedInGroundPie, 'Bus', obj.type4);
 
       for(var i=0; i<obj.message.length; i++){
         addStackChartData(stackChart3, obj.message[i].Date, obj.message[i].type1, obj.message[i].type2, obj.message[i].type3, obj.message[i].type4);
