@@ -279,12 +279,7 @@ function formatDate(date) {
 }
 
 function report(type){
-  if(type == 'passedingroundmonthly' || type =='passedinlvl1monthly' || type =='groundlvl1monthly' || type =='dastotalvisitorsmonthly' || type =='dastotalzonevisitorsmonthly'){
-    window.open("php/export.php?fromDate="+ouStartDate+"&toDate="+ouEndDate+"&type="+type);
-  }
-  else if(type == 'passedingrounddaily' || type =='passedinlvl1daily' || type =='groundlvl1daily' || type =='dastotalvisitorsdaily' || type =='dastotalzonevisitorsdaily'){
-    window.open("php/export.php?fromDate="+ouStartTime+"&toDate="+ouEndTime+"&type="+type);
-  }
+  window.open("php/export.php?fromDate="+ouStartDate+"&toDate="+ouEndDate);
 }
 </script>
 </body>

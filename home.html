@@ -61,8 +61,11 @@
                   </div>
                   <div class="col-9">
                     <div class="card">
-                      <div class="card-header">
-                        <h3 class="card-title">Total Vehicle Daily Chart</h3>
+                      <div class="card-header border-0">
+                        <div class="d-flex justify-content-between">
+                          <h3 class="card-title">Total Vehicle Daily Chart</h3>
+                          <a href="javascript:void(0);" onclick="report('dastotalvisitorsmonthly')">CSV Download</a>
+                        </div>
                       </div>
                       <div class="card-body">
                         <div class="chart">
@@ -221,6 +224,8 @@ $(function () {
     function (start, end) {
       var startFormatted = formatDate(start) + " 00:00:00";
       var endFormatted = formatDate(end) + " 23:59:59";
+      ouStartDate = formatDate(start) + " 06:00:00";
+      ouEndDate = formatDate(end) + " 21:45:00";
       
       $.post('php/getmonthly.php', {startDate: startFormatted, endDate: endFormatted}, function(data){
         var obj = JSON.parse(data);
@@ -396,6 +401,8 @@ $(function () {
 
     $.post('php/getdaily.php', {startDate: reservationdate + " " + reservationtime, endDate: reservationdate + " " + endtime}, function(data){
       var obj = JSON.parse(data);
+      ouStartTime = reservationdate + " 06:00:00";
+      ouEndTime = reservationdate + " 21:45:00";
 
       if(obj.status === 'success'){
         removeData(lineChart);
@@ -438,6 +445,8 @@ $(function () {
 
   $.post('php/getdaily.php', {startDate: $('#reservationdate').val() + " " + $('#reservationtime').val() + ':00', endDate: $('#reservationdate').val() + " " + $('#endtime').val() + ':59'}, function(data){
     var obj = JSON.parse(data);
+    ouStartTime = $('#reservationdate').val() + " 06:00:00";
+    ouEndTime = $('#reservationdate').val() + " 21:45:00";
 
     if(obj.status === 'success'){
       removeData(lineChart);

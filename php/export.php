@@ -34,252 +34,202 @@ if($_GET['toDate'] != null && $_GET['toDate'] != ''){
     }
 }
 
-if($_GET['type'] != null && $_GET['type'] != '' && $_GET['type'] != '-'){
-    $type = $_GET['type'];
+$query = $db->query("SELECT * FROM vehicle_count WHERE ".$searchQuery);
 
-    if($type == 'passedingroundmonthly' || $type == 'passedinlvl1monthly' || $type == 'passedingrounddaily' || $type =='passedinlvl1daily'){
-        $fields = array('TIMESTAMP', 'PASSING BY', 'IN');
-        $excelData = implode("\t", array_values($fields)) . "\n";
+if($query->num_rows > 0){ 
+    $prevTime = null; // Initialize previous time
+    $interval = 15;   // Time interval in minutes
+    $dataArray = [];  // Array to store data
+    $class1Total = 0;
+    $class2Total = 0;
+    $class3Total = 0;
+    $class4Total = 0;
+    $class5Total = 0;
+    $bigTotal = 0;
+
+    while ($row = $query->fetch_assoc()) {
+        $dateTime = new DateTime($row['Date']); // Assuming 'Date' is the column name
+        $currentTime = $dateTime->format('H:i'); // Extract HH:mm format
+    
+        // Calculate the interval start time
+        $intervalStart = clone $dateTime;
+        $intervalStart->setTime(
+            $dateTime->format('H'),
+            floor($dateTime->format('i') / $interval) * $interval
+        );
+    
+        $intervalKey = $intervalStart->format('Hi') . ' - ';
+        $intervalStart->add(new DateInterval("PT{$interval}M"));
+        $intervalKey .= $intervalStart->format('Hi');
+    
+        if (!isset($dataArray[$intervalKey])) {
+            $dataArray[$intervalKey] = [
+                'Time' => $intervalKey,
+                'Kelas 1' => 0,
+                'Kelas 2' => 0,
+                'Kelas 3' => 0,
+                'Kelas 4' => 0,
+                'Kelas 5' => 0,
+                'Total' => 0
+            ];
+        }
+    
+        // Process the current row data here
+        $vehicleType = $row['Vehicle_Type']; // Assuming 'Vehicle_Type' is the column name
+        $dataArray[$intervalKey]['Kelas ' . $vehicleType] += (int)$row['Count'];
+        $dataArray[$intervalKey]['Total'] += (int)$row['Count'];
+        $bigTotal += (int)$row['Count']; 
+
+        if ($vehicleType == 1) {
+            $class1Total += (int)$row['Count'];
+        } 
+        elseif ($vehicleType == 2) {
+            $class2Total += (int)$row['Count'];
+        } 
+        elseif ($vehicleType == 3) {
+            $class3Total += (int)$row['Count'];
+        } 
+        elseif ($vehicleType == 4) {
+            $class4Total += (int)$row['Count'];
+        }
+        elseif ($vehicleType == 5) {
+            $class5Total += (int)$row['Count'];
+        }
     }
-    else if($type == 'groundlvl1monthly' || $type == 'groundlvl1daily'){
-        $fields = array('TIMESTAMP', 'GROUND', 'LVL 1');
-        $excelData = implode("\t", array_values($fields)) . "\n";
-    }
-    else if($type == 'dastotalvisitorsmonthly' || $type == 'dastotalvisitorsdaily'){
-        $fields = array('TIMESTAMP', 'LEFT DOOR', 'RIGHT DOOR');
-        $excelData = implode("\t", array_values($fields)) . "\n";
-    }
-    else if($type == 'dastotalzonevisitorsmonthly' || $type == 'dastotalzonevisitorsdaily'){
-        $fields = array('TIMESTAMP', 'M1', 'M2', 'M3', 'M4', 'W1', 'W2', 'W3', 'W4', 'MVP + WVP');
-        $excelData = implode("\t", array_values($fields)) . "\n";
-    }
+
+    //$output = json_encode($dataArray);
+
+    $output .= '<table class="table">
+        <tbody>
+            <tr>
+                <td colspan="6" rowspan="7"><img src="https://www.llm.gov.my/assets/img/logo.png" width="20%" height="auto"></td>
+                <td rowspan="80"></td>
+                <td colspan="7" rowspan="5"></td>
+            </tr>
+            <tr>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                </tr>
+                <tr>
+                    <td colspan="3">BILANGAN LORONG</td>
+                    <td colspan="4">: 4</td>
+                </tr>
+                <tr>
+                    <td colspan="3">LEBAR LORONG</td>
+                    <td colspan="4">: 3.5 M</td>
+                </tr>
+                <tr>
+                    <td>LEBUHRAYA</td>
+                    <td colspan="2">: LEBUHRAYA BARU PANTAI</td>
+                    <td>DIRECTION</td>
+                    <td colspan="2">: BANGSAR BOUND</td>
+                    <td colspan="3">SHOULDER CLEARANCE</td>
+                    <td colspan="4">: 1.0 M</td>
+                </tr>
+                <tr>
+                    <td>STATION</td>
+                    <td colspan="2">: KM1.6</td>
+                    <td>FROM</td>
+                    <td colspan="2">: KEWAJIPAN</td>
+                    <td colspan="3">MEDIAN CLEARANCE</td>
+                    <td colspan="4">: 1.0 M</td>
+                </tr>
+                <tr>
+                    <td>DATE</td>
+                    <td colspan="2">: 8 SEP 2020</td>
+                    <td>TO</td>
+                    <td colspan="2">: SUNWAY</td>
+                    <td colspan="3">KEADAAN MUKA BUMI(TERRAIN)</td>
+                    <td colspan="4">: FLAT</td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                    <td colspan="3">REKABENTUK HALAJU (DESIGN SPEED)</td>
+                    <td colspan="4">: 60 KM/J</td>
+                </tr>
+                <tr>
+                    <td colspan="13"></td>
+                </tr>
+            <tr>
+                <td style="border: 1px solid #000000;">Time</td>
+                <td style="border: 1px solid #000000;">Kelas 1 <br> KERETA, VAN</td>
+                <td style="border: 1px solid #000000;">Kelas 2 <br> LORI KECIL (2 gandar & 6 roda)</td>
+                <td style="border: 1px solid #000000;">Kelas 3 <br> LORI BESAR (3 gandar atau lebih)</td>
+                <td style="border: 1px solid #000000;">Kelas 4 <br> TEKSI, LIMOSIN</td>
+                <td style="border: 1px solid #000000;">Kelas 5 <br> BAS</td>
+                <td style="border: 1px solid #000000;">Time</td>
+                <td style="border: 1px solid #000000;">Kelas 1 <br> KERETA, VAN</td>
+                <td style="border: 1px solid #000000;">Kelas 2 <br> LORI KECIL (2 gandar & 6 roda)</td>
+                <td style="border: 1px solid #000000;">Kelas 3 <br> LORI BESAR (3 gandar atau lebih)</td>
+                <td style="border: 1px solid #000000;">Kelas 4 <br> TEKSI, LIMOSIN</td>
+                <td style="border: 1px solid #000000;">Kelas 5 <br> BAS</td>
+                <td style="border: 1px solid #000000;">Total Vehicle</td>
+                <td style="border: 1px solid #000000;">LOS</td>
+            </tr>';
+
+foreach ($dataArray as $intervalData) {
+    $output .=  '<tr>';
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Time']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 1']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 2']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 3']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 4']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 5']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Time']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 1']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 2']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 3']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 4']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Kelas 5']}</td>";
+    $output .=  "<td style='border: 1px solid #000000;'>{$intervalData['Total']}</td>";
+    $output .=  '<td style="border: 1px solid #000000;"></td>';
+    $output .=  '</tr>';
 }
- 
-// Fetch records from database
-if($type == 'dastotalvisitorsmonthly' || $type == 'dastotalvisitorsdaily' || $type == 'dastotalzonevisitorsmonthly' || $type == 'dastotalzonevisitorsdaily'){
-    $query = $db->query("SELECT * FROM uniqlo_DA WHERE ".$searchQuery);
-    $message = array();
-    $dateBar = array();
-    $groundTotalCount = 0;
-    $groundPassingCount = 0;
-    $groundInCount = 0;
-    $totalL1 = 0;
-    $totalL2 = 0;
-    $totalL3 = 0;
-    $totalL4 = 0;
-    $totalR1 = 0;
-    $totalR2 = 0;
-    $totalR3 = 0;
-    $totalR4 = 0;
-    $totalC = 0;
 
-    if($query->num_rows > 0){ 
-        while($row = $query->fetch_assoc()){
-            $dateTime = "";
-
-            if($type == 'dastotalvisitorsmonthly' || $type == 'dastotalzonevisitorsmonthly'){
-                $dateTime = substr($row['Date'], 0, 10);
-            }
-            else if($type == 'dastotalvisitorsdaily' || $type =='dastotalzonevisitorsdaily'){
-                $dateTime = substr($row['Date'], 10, 3).":00";
-            }
-
-            if(!in_array($dateTime, $dateBar)){
-                $message[] = array( 
-                    'Date' => $dateTime,
-                    'TotalGroundCount' => 0,
-                    'InStoreGroundCount' => 0,
-                    'LeftDoorCount' => 0,
-                    'RightDoorCount' => 0,
-                    'PassingGroundCount' => 0,
-                    'TotalL1' => 0,
-                    'TotalL2' => 0,
-                    'TotalL3' => 0,
-                    'TotalL4' => 0,
-                    'TotalR1' => 0,
-                    'TotalR2' => 0,
-                    'TotalR3' => 0,
-                    'TotalR4' => 0,
-                    'TotalC' => 0
-                );
-
-                array_push($dateBar, $dateTime);
-            }
-
-            $key = array_search($dateTime, $dateBar);
-
-            if($row['Mode'] == 'Ground'){
-                if($row['Door'] == 'in'){
-                    $groundInCount += (int)$row['Count'];
-                    $message[$key]['TotalGroundCount'] += (int)$row['Count'];
-                    $message[$key]['InStoreGroundCount'] += (int)$row['Count'];
-
-                    if($row['Device'] == 'L1' || $row['Device'] == 'l1'){
-                        $message[$key]['LeftDoorCount'] += (int)$row['Count'];
-                    }
-                    if($row['Device'] == 'R1' || $row['Device'] == 'r1'){
-                        $message[$key]['RightDoorCount'] += (int)$row['Count'];
-                    }
-                }
-                else if($row['Door'] == 'passing by'){
-                    $groundPassingCount += (int)$row['Count'];
-                    $groundTotalCount += (int)$row['Count'];
-                    $message[$key]['TotalGroundCount'] += (int)$row['Count'];
-                    $message[$key]['PassingGroundCount'] += (int)$row['Count'];
-
-                    if($row['Device'] == 'L1' || $row['Device'] == 'l1'){
-                        $totalL1 += (int)$row['Count'];
-                        $message[$key]['TotalL1'] += (int)$row['Count'];
-                    }
-                    else if($row['Device'] == 'L2' || $row['Device'] == 'l2'){
-                        $totalL2 += (int)$row['Count'];
-                        $message[$key]['TotalL2'] += (int)$row['Count'];
-                    }
-                    else if($row['Device'] == 'L3' || $row['Device'] == 'l3'){
-                        $totalL3 += (int)$row['Count'];
-                        $message[$key]['TotalL3'] += (int)$row['Count'];
-                    }
-                    else if($row['Device'] == 'L4' || $row['Device'] == 'l4'){
-                        $totalL4 += (int)$row['Count'];
-                        $message[$key]['TotalL4'] += (int)$row['Count'];
-                    }
-                    else if($row['Device'] == 'R1' || $row['Device'] == 'r1'){
-                        $totalR1 += (int)$row['Count'];
-                        $message[$key]['TotalR1'] += (int)$row['Count'];
-                    }
-                    else if($row['Device'] == 'R2' || $row['Device'] == 'r2'){
-                        $totalR2 += (int)$row['Count'];
-                        $message[$key]['TotalR2'] += (int)$row['Count'];
-                    }
-                    else if($row['Device'] == 'R3' || $row['Device'] == 'r3'){
-                        $totalR3 += (int)$row['Count'];
-                        $message[$key]['TotalR3'] += (int)$row['Count'];
-                    }
-                    else if($row['Device'] == 'R4' || $row['Device'] == 'r4'){
-                        $totalR4 += (int)$row['Count'];
-                        $message[$key]['TotalR4'] += (int)$row['Count'];
-                    }
-                    else if($row['Device'] == 'C' || $row['Device'] == 'c'){
-                        $totalC += (int)$row['Count'];
-                        $message[$key]['TotalC'] += (int)$row['Count'];
-                    }
-                }
-            }
-        }
-
-
-        for($i=0; $i<count($message); $i++){
-            if($type == 'dastotalvisitorsmonthly' || $type == 'dastotalvisitorsdaily'){
-                $lineData = array($message[$i]['Date'], $message[$i]['LeftDoorCount'], $message[$i]['RightDoorCount']);
-                array_walk($lineData, 'filterData'); 
-                $excelData .= implode("\t", array_values($lineData)) . "\n"; 
-            }
-            else if($type == 'dastotalzonevisitorsmonthly' || $type == 'dastotalzonevisitorsdaily'){
-                $lineData = array($message[$i]['Date'], $message[$i]['TotalL1'], $message[$i]['TotalL2'], $message[$i]['TotalL3'], $message[$i]['TotalL4'], $message[$i]['TotalR1'], $message[$i]['TotalR2'], $message[$i]['TotalR3'], $message[$i]['TotalR4'], $message[$i]['TotalC']);
-                array_walk($lineData, 'filterData'); 
-                $excelData .= implode("\t", array_values($lineData)) . "\n";
-            }
-        }
-    }
-    else{ 
-        $excelData .= 'No records found...'. "\n"; 
-    }
+$output .=  '</tbody><tfoot>';
+$output .=  '<tr>';
+$output .=  "<td colspan='6'></td>";
+$output .=  "<td style='border: 1px solid #000000;'>Total</td>";
+$output .=  "<td style='border: 1px solid #000000;'>{$class1Total}</td>";
+$output .=  "<td style='border: 1px solid #000000;'>{$class2Total}</td>";
+$output .=  "<td style='border: 1px solid #000000;'>{$class3Total}</td>";
+$output .=  "<td style='border: 1px solid #000000;'>{$class4Total}</td>";
+$output .=  "<td style='border: 1px solid #000000;'>{$class5Total}</td>";
+$output .=  "<td style='border: 1px solid #000000;'>{$bigTotal}</td>";
+$output .=  '<td style="border: 1px solid #000000;"></td>';
+$output .=  '</tr>';
+$output .=  '<tr>';
+$output .=  "<td colspan='6'></td>";
+$output .=  "<td style='border: 1px solid #000000;'>Composition (%)</td>";
+$output .=  "<td style='border: 1px solid #000000;'>".round($class1Total/$bigTotal * 100, 2)." %</td>";
+$output .=  "<td style='border: 1px solid #000000;'>".round($class2Total/$bigTotal * 100, 2)." %</td>";
+$output .=  "<td style='border: 1px solid #000000;'>".round($class3Total/$bigTotal * 100, 2)." %</td>";
+$output .=  "<td style='border: 1px solid #000000;'>".round($class4Total/$bigTotal * 100, 2)." %</td>";
+$output .=  "<td style='border: 1px solid #000000;'>".round($class5Total/$bigTotal * 100, 2)." %</td>";
+$output .=  "<td style='border: 1px solid #000000;'>100 %</td>";
+$output .=  '<td style="border: 1px solid #000000;"></td>';
+$output .=  '</tr>';
+$output .=  '</tfoot></table>';
 }
-else{
-    $query = $db->query("SELECT * FROM uniqlo_1u WHERE ".$searchQuery);
-    $message = array();
-    $dateBar = array();
-    $groundTotalCount = 0;
-    $groundPassingCount = 0;
-    $groundInCount = 0;
-    $lvl1TotalCount = 0;
-    $lvl1PassingCount = 0;
-    $lvl1InCount = 0;
-
-    if($query->num_rows > 0){ 
-        while($row = $query->fetch_assoc()){
-            $dateTime = "";
-
-            if($type == 'passedingroundmonthly' || $type == 'passedinlvl1monthly' || $type == 'groundlvl1monthly'){
-                $dateTime = substr($row['Date'], 0, 10);
-            }
-            else if($type == 'passedingrounddaily' || $type =='passedinlvl1daily' || $type == 'groundlvl1daily'){
-                $dateTime = substr($row['Date'], 10, 3).":00";
-            }
-
-            if(!in_array($dateTime, $dateBar)){
-                $message[] = array( 
-                    'Date' => $dateTime,
-                    'TotalGroundCount' => 0,
-                    'InStoreGroundCount' => 0,
-                    'PassingGroundCount' => 0,
-                    'TotalLvl1Count' => 0,
-                    'InStoreLvl1Count' => 0,
-                    'PassingLvl1Count' => 0
-                );
-
-                array_push($dateBar, $dateTime);
-            }
-
-            $key = array_search($dateTime, $dateBar);
-
-            if($row['Mode'] == 'Ground'){
-                if($row['Door'] == 'in'){
-                    $groundInCount += (int)$row['Count'];
-                    $groundTotalCount += (int)$row['Count'];
-                    $message[$key]['TotalGroundCount'] += (int)$row['Count'];
-                    $message[$key]['InStoreGroundCount'] += (int)$row['Count'];
-                }
-                else if($row['Door'] == 'passing by'){
-                    $groundPassingCount += (int)$row['Count'];
-                    $message[$key]['PassingGroundCount'] += (int)$row['Count'];
-                }
-            }
-            else if($row['Mode'] == 'Level 1'){
-                if($row['Door'] == 'in'){
-                    $lvl1InCount += (int)$row['Count'];
-                    $lvl1TotalCount += (int)$row['Count'];
-                    $message[$key]['TotalLvl1Count'] += (int)$row['Count'];
-                    $message[$key]['InStoreLvl1Count'] += (int)$row['Count'];
-                }
-                else if($row['Door'] == 'passing by'){
-                    $lvl1PassingCount += (int)$row['Count'];
-                    $message[$key]['PassingLvl1Count'] += (int)$row['Count'];
-                }
-            }
-        }
-
-
-        for($i=0; $i<count($message); $i++){
-            if($type == 'passedingroundmonthly' || $type == 'passedingrounddaily'){
-                $lineData = array($message[$i]['Date'], $message[$i]['PassingGroundCount'], $message[$i]['InStoreGroundCount']);
-                array_walk($lineData, 'filterData'); 
-                $excelData .= implode("\t", array_values($lineData)) . "\n"; 
-            }
-            else if($type == 'passedinlvl1monthly' || $type == 'passedinlvl1daily'){
-                $lineData = array($message[$i]['Date'], $message[$i]['PassingLvl1Count'], $message[$i]['InStoreLvl1Count']);
-                array_walk($lineData, 'filterData'); 
-                $excelData .= implode("\t", array_values($lineData)) . "\n";
-            }
-            else if($type == 'groundlvl1monthly' || $type == 'groundlvl1daily'){
-                $lineData = array($message[$i]['Date'], $message[$i]['TotalGroundCount'], $message[$i]['TotalLvl1Count']);
-                array_walk($lineData, 'filterData'); 
-                $excelData .= implode("\t", array_values($lineData)) . "\n"; 
-            }
-        }
-    }
-    else{ 
-        $excelData .= 'No records found...'. "\n"; 
-    }
+else{ 
+    $output .= 'No records found...'. "\n"; 
 }
 
 
 // Headers for download 
-header("Content-Type: application/vnd.ms-excel"); 
-header("Content-Disposition: attachment; filename=\"$fileName\""); 
- 
+header("Content-Type: application/vnd.ms-excel; charset=utf-8"); 
+header("Content-Disposition: attachment; filename=\"$fileName\"");
+
 // Render excel data 
-echo $excelData;
- 
+// $str = utf8_decode($excelData);
+echo $output; 
 exit;
 ?>
