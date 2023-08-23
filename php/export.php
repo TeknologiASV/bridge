@@ -17,6 +17,9 @@ $output = '';
 ## Search 
 $searchQuery = "";
 $type = "passedinlvl1daily";
+$input_date = substr($_GET['fromDate'], 0, 10);
+$date_obj = new DateTime($input_date);
+$formatted_date = $date_obj->format("j M Y");
 
 if($_GET['fromDate'] != null && $_GET['fromDate'] != ''){
     $start = (string)$_GET['fromDate'];
@@ -144,7 +147,7 @@ if($query->num_rows > 0){
                 </tr>
                 <tr>
                     <td>DATE</td>
-                    <td colspan="2">: 8 SEP 2020</td>
+                    <td colspan="2">: '.$formatted_date.'</td>
                     <td>TO</td>
                     <td colspan="2">: SUNWAY</td>
                     <td colspan="3">KEADAAN MUKA BUMI(TERRAIN)</td>
